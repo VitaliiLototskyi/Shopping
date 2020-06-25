@@ -1,7 +1,9 @@
 package com.softserveinc.retail.shopping.models;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 public class Dish {
@@ -9,14 +11,23 @@ public class Dish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column
+    @Column(name = "name")
     private String name;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "dish_ingredient",
+            joinColumns = @JoinColumn(name = "dish_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id", referencedColumnName = "id")
+    )
+    Set<Ingredient> ingredients;
 
     public Dish() {
     }
 
-    public Dish(String name) {
+    public Dish(String name, Ingredient ...ingredient) {
         this.name = name;
+        this.ingredients = Stream.of(ingredient).collect(Collectors.toSet());
+        this.ingredients.forEach(x -> x.getDishes().add(this));
     }
 
     public Integer getId() {
@@ -35,26 +46,11 @@ public class Dish {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Dish dish = (Dish) o;
-        return id.equals(dish.id) &&
-                name.equals(dish.name);
+    public Set<Ingredient> getIngredients() {
+        return ingredients;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
-
-    @Override
-    public String toString() {
-        return "Dish{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
 }

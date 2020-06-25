@@ -14,7 +14,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.util.List;
 
 @SpringBootApplication
-@ComponentScan("com.softserveinc.retail.shopping.dal")
+@ComponentScan({"com.softserveinc.retail.shopping.dal",
+		"com.softserveinc.retail.shopping.service",
+		"com.softserveinc.retail.shopping.rest"})
 @EnableJpaRepositories(basePackages = "com.softserveinc.retail.shopping.repository")
 public class ShoppingApplication implements CommandLineRunner {
 
@@ -31,7 +33,9 @@ public class ShoppingApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 //		System.out.println(restaurantDAO.getRestaurant(new RestaurantEntity(1, "first lviv coronovirusarnia")));
 //		dishRepository.save(new Dish("Soup"));
-		List<Dish> dishes =  dishRepository.fetchDishesById(1);
-		System.out.println(dishes.get(0).getName());
+//		List<Dish> dishes =  dishRepository.findAll();
+//		for (Dish dish : dishes) {
+//			System.out.println(dish.toString());
+//		}
 	}
 }
